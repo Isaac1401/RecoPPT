@@ -5,8 +5,18 @@ import mediapipe as mp
 from io import BytesIO
 import os
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# Habilitar CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite todas las conexiones (puedes restringirlo a ["https://piepapti.netlify.app"])
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos HTTP
+    allow_headers=["*"],  # Permite todos los encabezados
+)
 
 # Inicializar MediaPipe Hands
 mp_hands = mp.solutions.hands
