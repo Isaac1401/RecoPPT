@@ -3,6 +3,8 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from io import BytesIO
+import os
+import uvicorn
 
 app = FastAPI()
 
@@ -50,3 +52,8 @@ async def detectar_gesto_en_imagen(file: UploadFile = File(...)):
             gesto_detectado = detectar_gesto(mano_landmarks)
 
     return {"gesto": gesto_detectado}
+
+# Ejecutar la aplicación con uvicorn
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))  # Usa el puerto asignado por Render o el 10000 por defecto
+    uvicorn.run(app, host="0.0.0.0", port=port)
