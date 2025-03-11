@@ -2,9 +2,6 @@ from fastapi import FastAPI, UploadFile, File
 import cv2
 import numpy as np
 import mediapipe as mp
-from io import BytesIO
-import os
-import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -12,10 +9,10 @@ app = FastAPI()
 # Habilitar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite todas las conexiones (puedes restringirlo a ["https://piepapti.netlify.app"])
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos los métodos HTTP
-    allow_headers=["*"],  # Permite todos los encabezados
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Inicializar MediaPipe Hands
@@ -23,7 +20,7 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1)
 mp_drawing = mp.solutions.drawing_utils
 
-# Función para determinar el gesto de la mano
+# Función para detectar el gesto
 def detectar_gesto(mano_landmarks):
     dedos_arriba = []
     dedos_indices = [8, 12, 16, 20]
@@ -62,8 +59,3 @@ async def detectar_gesto_en_imagen(file: UploadFile = File(...)):
             gesto_detectado = detectar_gesto(mano_landmarks)
 
     return {"gesto": gesto_detectado}
-
-# Ejecutar la aplicación con uvicorn
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # Usa el puerto asignado por Render o el 10000 por defecto
-    uvicorn.run(app, host="0.0.0.0", port=port)
